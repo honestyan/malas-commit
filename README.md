@@ -7,7 +7,7 @@
 **malas-commit**: Your savior when you're too lazy to write commit messages! Automatically generate meaningful commit messages with ease. (Fastest NPM package for generating meaningful commit messages using Groq API)
 
 <p align="center">
-    <img src="https://github.com/user-attachments/assets/7dbfd9ef-380f-4cc0-bc74-0d64a6270ed4" alt="Screen Shot 2024-10-03 at 18 47 03">
+  <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjRtOWxpYjFyYTlvb3F3Z3dxejViaWpib3Frdzlwb3VyOG94OTQ4eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/PklUQkgci2ogb3vPZp/giphy.gif" alt="malas-commit">
 </p>
 
 <p align="center">
@@ -57,10 +57,6 @@ malas setConfig GROQ_APIKEY <your-groq-apikey>
 ```
 
 ## How to use
-
-<p align="center">
-  <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjRtOWxpYjFyYTlvb3F3Z3dxejViaWpib3Frdzlwb3VyOG94OTQ4eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/PklUQkgci2ogb3vPZp/giphy.gif" alt="malas-commit">
-</p>
 
 ```bash
 
