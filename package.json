@@ -1,6 +1,6 @@
 {
   "name": "malas-commit",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Fastest NPM package for generating meaningful commit messages using Groq API",
   "main": "out/index.js",
   "bin": {

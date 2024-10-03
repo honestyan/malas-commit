@@ -56,7 +56,11 @@ malas setConfig GROQ_APIKEY <your-groq-apikey>
 
 ```
 
-How to use:
+## How to use
+
+<p align="center">
+  <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjRtOWxpYjFyYTlvb3F3Z3dxejViaWpib3Frdzlwb3VyOG94OTQ4eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/PklUQkgci2ogb3vPZp/giphy.gif" alt="malas-commit">
+</p>
 
 ```bash
 
