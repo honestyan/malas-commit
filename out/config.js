@@ -12,14 +12,13 @@ const loadConfig = () => {
         return JSON.parse(configFile);
     }
     catch (err) {
-        console.warn(`Failed to load config from ${configFilePath}: ${err instanceof Error ? err.message : String(err)}\n\n\n Run 'malas setConfig GROQ_APIKEY <your_apikey>' \n\n\n`);
+        console.warn(`Failed to load config from ${configFilePath}: ${err instanceof Error ? err.message : String(err)}\n\nCreating a new configuration file...`);
         saveConfig(defaultConfig);
-        return defaultConfig;
+        throw new Error(`Configuration file created at ${configFilePath}. Please update the configuration.\n\n\nRun 'malas setConfig GROQ_APIKEY <your_apikey>' to set your API key.\n\n\n`);
     }
 };
 const saveConfig = (config) => {
     fs.writeFileSync(configFilePath, JSON.stringify(config, null, 2), "utf-8");
-    console.log(`Configuration file created at: ${configFilePath}`);
 };
 const loadedConfig = loadConfig();
 export const config = {
