@@ -31,6 +31,12 @@ The word _malas_ in Indonesian means **lazy**. Often, developers feel lazy or la
 - **Global Installation**: Install once, use everywhere.
 - **Simple Command**: Generate messages with a single command.
 
+## Requirement
+
+You should have a GROQ_APIKEY (for free, just sign up).
+
+You can obtain it from [GROQ Console](https://console.groq.com/keys).
+
 ---
 
 ## Installation
