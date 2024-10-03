@@ -79,7 +79,7 @@ You can configure **malas-commit** by creating a `~/.malas-commit.json` file in 
 ```json
 {
   "GROQ_APIKEY": "<your-groq-apikey>",
-  "COMMIT_PROMPT": "<your-custom-promt>" // Leave it blank if you wanna use default prompt instead
+  "COMMIT_PROMPT": "<your-custom-promt>" // Leave it blank if you use default prompt instead
 }
 ```
 
