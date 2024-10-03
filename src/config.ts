@@ -15,16 +15,11 @@ const loadConfig = () => {
     const configFile = fs.readFileSync(configFilePath, "utf-8");
     return JSON.parse(configFile);
   } catch (err) {
-    if (err instanceof Error) {
-      console.error(
-        `Failed to load config from ${configFilePath}: ${err.message}
-        run 'malas setConfig GROQ_APIKEY <your-apikey>'`
-      );
-    } else {
-      console.error(`Failed to load config from ${configFilePath}: ${err}
-      run 'malas setConfig GROQ_APIKEY <your-apikey>'`);
-    }
-    return {};
+    const errorMessage = `Failed to load config from ${configFilePath}: ${
+      err instanceof Error ? err.message : String(err)
+    }\nRun 'malas setConfig GROQ_APIKEY <your-apikey>'`;
+
+    throw new Error(errorMessage);
   }
 };
 
