@@ -1,6 +1,6 @@
 {
-  "name": "malas-commit",
-  "version": "1.0.8",
+  "name": "@honestyan/malas-commit",
+  "version": "1.0.9",
   "description": "Fastest NPM package for generating meaningful commit messages using Groq API",
   "main": "out/index.js",
   "bin": {
@@ -44,5 +44,12 @@
   ],
   "type": "module",
   "author": "honestyan",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/honestyan/malas-commit.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
 }
