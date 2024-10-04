@@ -4,7 +4,7 @@
 [![npm downloads](https://img.shields.io/npm/dt/malas-commit.svg)](https://www.npmjs.com/package/malas-commit)
 [![License](https://img.shields.io/npm/l/malas-commit.svg)](https://github.com/honestyan/malas-commit/blob/main/LICENSE)
 
-**malas-commit**: Your savior when you're too lazy to write commit messages! Automatically generate meaningful commit messages with ease. (Fastest NPM package for generating meaningful commit messages using Groq API)
+**malas-commit**: The ultimate tool for developers who need automated, meaningful commit messages without the hassle! This fast and efficient NPM package uses the Groq API to generate smart, context-aware commit messages in seconds. Perfect for boosting productivity in your Git workflows.
 
 <p align="center">
   <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjRtOWxpYjFyYTlvb3F3Z3dxejViaWpib3Frdzlwb3VyOG94OTQ4eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/PklUQkgci2ogb3vPZp/giphy.gif" alt="malas-commit">

@@ -1,6 +1,6 @@
 {
   "name": "malas-commit",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Fastest NPM package for generating meaningful commit messages using Groq API",
   "main": "out/index.js",
   "bin": {
@@ -31,11 +31,16 @@
   },
   "keywords": [
     "commit",
-    "generator",
+    "message generator",
+    "automated commit messages",
     "groq",
     "typescript",
     "ai",
-    "malas"
+    "lazy commit",
+    "git automation",
+    "developer tools",
+    "productivity",
+    "version control"
   ],
   "type": "module",
   "author": "honestyan",
