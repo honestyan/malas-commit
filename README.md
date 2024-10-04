@@ -91,7 +91,10 @@ You can configure **malas-commit** by creating a `~/.malas-commit.json` file in 
 
 ## To-Do List
 
-- [ ] Fix the bug where the process still runs after selecting "no" in the yes/no prompt.
+- [x] Fix the bug where the process still runs after selecting "no" in the yes/no prompt.
+- [x] Implement error handling for failed network requests.
+- [ ] Refactor the code for better readability.
+- [ ] Write unit tests for the new features.
 - [ ] Add an auto-generated pull request description generator related to changes using Markdown format code.
 
 ## Contributing

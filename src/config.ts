@@ -29,6 +29,7 @@ const loadConfig = (): Config => {
     );
     console.log(`Please update the configuration by running:\n`);
     console.log(`'malas setConfig GROQ_APIKEY <your_apikey>'\n`);
+    process.exit(1);
 
     return defaultConfig;
   }
