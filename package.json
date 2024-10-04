@@ -1,6 +1,6 @@
 {
   "name": "malas-commit",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "Effortlessly generate meaningful and automated commit messages using AI-powered Groq API. Perfect for developers seeking faster Git workflows with minimal effort.",
   "main": "out/index.js",
   "bin": {

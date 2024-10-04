@@ -57,6 +57,13 @@ const runGenerate = async () => {
     const stagedFiles = await getStagedFiles();
     const diff = await getDiff(stagedFiles);
 
+    if (!diff || diff.length === 0) {
+      console.log(
+        "No changes detected. Please make some changes before generating a commit message."
+      );
+      process.exit(1);
+    }
+
     let commitMessage = await generateCommitMessage(diff);
 
     let useCommitMessage = await confirm({

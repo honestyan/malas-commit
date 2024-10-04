@@ -7,7 +7,7 @@ export const ensureFilesAreStaged = async () => {
 
   const shouldAddFiles = await confirm({
     message:
-      'You have untracked/modified files. Do you want to run "git add" on them?',
+      'You have untracked/modified files. Do you want to run "git add ." on them?',
   });
 
   if (shouldAddFiles) {
