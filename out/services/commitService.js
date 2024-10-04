@@ -5,18 +5,21 @@ export const generateCommitMessage = async (diff) => {
     role: "system",
     content:
       config.COMMIT_PROMPT ||
-      `You are an AI responsible for generating meaningful commit messages for code repositories (only one sentence not a paragraph).
-        Based on the type of change, include a specific prefix in your commit message:
-        - [Add]: For new features, functions, or files.
-        - [Fix]: For bug fixes or corrections.
-        - [Update]: For updates or modifications to existing code.
-        - [Remove]: For deletions of code or functionality.
-        - [Chore]: For general tasks, maintenance, or other minor changes.
+      `You are an AI designed to generate concise and meaningful commit messages for code repositories, restricted to a single sentence. Craft your message based on the type of change, incorporating the appropriate prefix as follows:
+        - **[Add]**: For new features, functions, or files.
+        - **[Fix]**: For bug fixes or corrections.
+        - **[Update]**: For updates or modifications to existing code.
+        - **[Remove]**: For deletions of code or functionality.
+        - **[Chore]**: For general tasks, maintenance, or minor changes.
 
-        example: [Update] (controllers/products.go, controllers/users.go) remove redundant BodyParser calls and directly use validated payload from Locals.
-        so it should be like this:
-        if the list of files char not more than 60 char then= [Type] (file/s name seperated with comma) $commit_message
-        if the list of files char more than 60 char then= [Type] $commit_message
+        **Example**: [Update] (controllers/products.go, controllers/users.go) removed redundant BodyParser calls and directly used validated payload from Locals.
+
+        **Formatting Guidelines**:
+        1. If the combined length of the file names is **60 characters or fewer**, format your message as follows:
+        - '[Type] (file/s name separated by commas) $commit_message'
+        2. If the combined length exceeds **60 characters**, omit the file list:
+        - '[Type] $commit_message'
+        (do not include the prefix in the message)
         .
       `,
   };

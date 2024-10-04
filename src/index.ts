@@ -59,7 +59,7 @@ const runGenerate = async () => {
 
     if (!diff || diff.length === 0) {
       console.log(
-        "No changes detected. Please make some changes before generating a commit message."
+        "No changes detected in the staged files. Please make some changes before generating a commit message."
       );
       process.exit(1);
     }
