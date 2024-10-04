@@ -20,6 +20,7 @@ export const generateCommitMessage = async (diff) => {
         2. If the combined length exceeds **60 characters**, omit the file list:
         - '[Type] $commit_message'
         (do not include the prefix in the message)
+        KEEP IN MIND THAT STICK TO THE POINT TO ONLY REPLY WITH MY PROMPTED MESSAGE. DO NOT ADD ANY ADDITIONAL INFORMATION
         .
       `,
   };
