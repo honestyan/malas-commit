@@ -1,6 +1,6 @@
 {
   "name": "malas-commit",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Effortlessly generate meaningful and automated commit messages using AI-powered Groq API. Perfect for developers seeking faster Git workflows with minimal effort.",
   "main": "out/index.js",
   "bin": {
@@ -11,7 +11,7 @@
     "build": "tsc",
     "start": "node out/index.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "publish": "npm publish --registry=https://registry.npmjs.org/ && npm run publish-github",
+    "publish": "npm publish --registry=https://registry.npmjs.org/",
     "publish-github": "npm publish --registry=https://npm.pkg.github.com --access public"
   },
   "dependencies": {

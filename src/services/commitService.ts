@@ -15,7 +15,10 @@ export const generateCommitMessage = async (diff: string) => {
         - [Chore]: For general tasks, maintenance, or other minor changes.
 
         example: [Update] (controllers/products.go, controllers/users.go) remove redundant BodyParser calls and directly use validated payload from Locals.
-        so it should be like this [Type] (file/s name seperated with comma) $commit_message.
+        so it should be like this:
+        if the list of files char not more than 60 char then= [Type] (file/s name seperated with comma) $commit_message
+        if the list of files char more than 60 char then= [Type] $commit_message
+        .
       `,
   };
 

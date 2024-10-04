@@ -60,7 +60,7 @@ const runGenerate = async () => {
     let commitMessage = await generateCommitMessage(diff);
 
     let useCommitMessage = await confirm({
-      message: `Generated Commit Message: ${commitMessage}\nDo you want to use this commit message?`,
+      message: `Generated Commit Message: \n\n${commitMessage}\n\nDo you want to use this commit message?`,
       initialValue: true,
     });
 
@@ -68,7 +68,17 @@ const runGenerate = async () => {
       await gitCommit(commitMessage);
     } else {
       commitMessage = await generateCommitMessage(diff);
-      await gitCommit(commitMessage);
+      useCommitMessage = await confirm({
+        message: `Regenerated Commit Message: \n\n${commitMessage}\n\nDo you want to use this commit message?`,
+        initialValue: true,
+      });
+
+      if (useCommitMessage) {
+        await gitCommit(commitMessage);
+      } else {
+        console.log("You opted not to use the generated commit message.");
+        process.exit(1);
+      }
     }
   } catch (error) {
     if (error instanceof Error) {

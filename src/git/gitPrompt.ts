@@ -13,8 +13,9 @@ export const ensureFilesAreStaged = async () => {
   if (shouldAddFiles) {
     await gitAdd(changedFiles);
   } else {
-    throw new Error(
-      "Please stage your changes before generating the commit message."
+    console.log(
+      "Please stage your changes before generating the commit message. Exiting..."
     );
+    process.exit(1);
   }
 };
