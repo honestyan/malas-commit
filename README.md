@@ -83,12 +83,6 @@ You can configure **malas-commit** by creating a `~/.malas-commit.json` file in 
 }
 ```
 
-## Known Issues
-
-- **Yes/No Prompt Bug**: When the user selects "no" at a yes/no prompt, the command still proceeds as if "yes" was selected. This bug needs fixing to properly exit or halt the process if "no" is chosen.
-
-- **Auto-generated Pull Request Descriptions**: We plan to add an auto-generated pull request description feature. This will automatically generate pull request descriptions in **Markdown format** based on changes in the project.
-
 ## To-Do List
 
 - [x] Fix the bug where the process still runs after selecting "no" in the yes/no prompt.
