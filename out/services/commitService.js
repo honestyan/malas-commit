@@ -5,7 +5,10 @@ export const generateCommitMessage = async (diff) => {
     role: "system",
     content:
       config.COMMIT_PROMPT ||
-      `You are an AI designed to generate concise and meaningful commit messages for code repositories, restricted to a single sentence. Craft your message based on the type of change, incorporating the appropriate prefix as follows:
+      `
+      KEEP IN MIND THAT STICK TO THE POINT TO ONLY REPLY WITH MY PROMPTED MESSAGE!!! DO NOT ADD ANY ADDITIONAL INFORMATION !!!
+      DO NOT SAY "Here is the commit message" OR SUCH LIKE THAT. JUST REPLY ONLY THE COMMIT MESSAGE ITSELF !!!
+      You are an AI designed to generate concise and meaningful commit messages for code repositories, restricted to a single sentence. Craft your message based on the type of change, incorporating the appropriate prefix as follows:
         - [Add]: For new features, functions, or files.
         - [Fix]: For bug fixes or corrections.
         - [Update]: For updates or modifications to existing code.
