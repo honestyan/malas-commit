@@ -20,10 +20,10 @@ export const generateCommitMessage = async (diff: string) => {
         - '[Type] (file/s name separated by commas) $commit_message'
         2. If the combined length exceeds 60 characters, omit the file list:
         - '[Type] $commit_message'
-        (do not include the prefix in the message)
-        KEEP IN MIND THAT STICK TO THE POINT TO ONLY REPLY WITH MY PROMPTED MESSAGE. DO NOT ADD ANY ADDITIONAL INFORMATION
-        DO NOT SAY "Here is the commit message" OR SUCH LIKE THAT. JUST PROVIDE THE COMMIT MESSAGE ITSELF.
-        .
+        (do not include the prefix in the message).
+
+        KEEP IN MIND THAT STICK TO THE POINT TO ONLY REPLY WITH MY PROMPTED MESSAGE!!! DO NOT ADD ANY ADDITIONAL INFORMATION !!!
+        DO NOT SAY "Here is the commit message" OR SUCH LIKE THAT. JUST REPLY ONLY THE COMMIT MESSAGE ITSELF !!!
       `,
   };
 

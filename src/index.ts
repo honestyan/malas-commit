@@ -10,8 +10,6 @@ import {
   getStagedFiles,
   assertGitRepo,
   gitCommit,
-  gitAdd,
-  gitPush,
 } from "./git/gitUtils";
 import os from "os";
 import { confirm } from "@clack/prompts";
@@ -45,37 +43,19 @@ const saveConfig = (config: any) => {
 };
 
 const setConfig = (key: string, value: string) => {
-  let config: { [key: string]: any } = {};
-
-  if (fs.existsSync(configFilePath)) {
-    config = loadConfig();
-  } else {
-    console.log(
-      `Configuration file not found: ${configFilePath}. Creating a new one with the provided settings.`
-    );
-  }
-
+  const config = loadConfig();
   config[key] = value;
-
   saveConfig(config);
-
   console.log(`Configuration updated: ${key}=${value}`);
 };
 
-const runGenerate = async (autoCommit = false) => {
+const runGenerate = async () => {
   try {
     await assertGitRepo();
-
-    // Automatically stage files if `-y` is used
-    if (autoCommit) {
-      const changedFiles = await getStagedFiles();
-      await gitAdd(changedFiles);
-    } else {
-      await ensureFilesAreStaged();
-    }
+    await ensureFilesAreStaged();
 
     const stagedFiles = await getStagedFiles();
-    let diff = await getDiff(stagedFiles);
+    const diff = await getDiff(stagedFiles);
 
     if (!diff || diff.length === 0) {
       console.log(
@@ -84,7 +64,7 @@ const runGenerate = async (autoCommit = false) => {
       process.exit(1);
     }
 
-    const charLimit = 50000;
+    const charLimit = 6000;
     let charCount = 0;
     let truncatedDiff: string[] = [];
 
@@ -103,9 +83,17 @@ const runGenerate = async (autoCommit = false) => {
 
     let commitMessage = await generateCommitMessage(truncatedDiff.join("\n"));
 
-    if (!autoCommit) {
-      let useCommitMessage = await confirm({
-        message: `Generated Commit Message: \n\n${commitMessage}\n\nDo you want to use this commit message?`,
+    let useCommitMessage = await confirm({
+      message: `Generated Commit Message: \n\n${commitMessage}\n\nDo you want to use this commit message?`,
+      initialValue: true,
+    });
+
+    if (useCommitMessage) {
+      await gitCommit(commitMessage);
+    } else {
+      commitMessage = await generateCommitMessage(diff);
+      useCommitMessage = await confirm({
+        message: `Regenerated Commit Message: \n\n${commitMessage}\n\nDo you want to use this commit message?`,
         initialValue: true,
       });
 
@@ -115,27 +103,17 @@ const runGenerate = async (autoCommit = false) => {
         console.log("You opted not to use the generated commit message.");
         process.exit(1);
       }
-    } else {
-      // Automatically commit and push if `-y` is used
-      await gitCommit(commitMessage);
-      await gitPush();
     }
   } catch (error) {
     if (error instanceof Error) {
-      console.error(`Error: ${error.message}`);
+      console.error(error.message);
     } else {
       console.error("An unknown error occurred.");
     }
-    process.exit(2);
   }
 };
 
 const argv = yargs(hideBin(process.argv))
-  .option("y", {
-    alias: "yes",
-    type: "boolean",
-    description: "Automatically commit and push without confirmation",
-  })
   .command(
     "setConfig <key> <value>",
     "Set configuration values",
@@ -151,9 +129,11 @@ const argv = yargs(hideBin(process.argv))
         });
     },
     (argv) => {
+      loadConfig();
       const key = argv.key as string;
       const value = argv.value as string;
       setConfig(key, value);
+      console.log(`Configuration updated: ${key}=${value}`);
     }
   )
   .command(
