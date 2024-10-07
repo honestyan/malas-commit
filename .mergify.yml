@@ -1,0 +1,57 @@
+pull_request_rules:
+  # membuat requirement dari automerge dengan sistem
+  # ketika workflow build passed maka akan dicentang
+  # ketika target pull request ke main maka akan dicentang
+  # ketika dikasih label 'ready-to-merge' akan dicentang
+
+  # ketika requirement telah terpenuhi maka bot akan bekerja
+  # dan pull request secara otomatis akan merge
+  - name: ci testing kalo sukses ke squash dengan label
+    conditions:
+      - base=main
+      - label=ready-to-merge
+    actions:
+      # menambahkan komentar jika sudah di merge
+      comment:
+        message: terima kasih atas kontribusinya @{{author}}!
+      # menambahkan label jika sudah di merge
+      label:
+        add:
+            - sudah direview!
+      # metode sistem dari automerge
+      merge:
+        method: squash
+
+  # membuat label dengan kondisi jika di dalam pull request
+  # terdapat file javascript atau typescript
+  - name: javascript and typescript label
+    conditions:
+      - files~=\.(js|ts)$
+    actions:
+      # menambahkan label 'javascript or typescript files'
+      # dan label 'request tim frontend untuk review'
+      label:
+        add:
+          - javascript or typescript files
+          - request tim untuk review
+
+  # membuat label dengan kondisi jika di dalam pull request
+  # terdapat file markdown
+  - name: markdown label
+    conditions:
+      - files~=\.md$
+    actions:
+      # menambahkan label 'markdown files'
+      label:
+        add:
+          - markdown files
+
+  # membuat sistem bot me-mention tim frontend untuk meriview
+  # dari pull request dengan kondisi jika terdapat file javascript atau typescript
+  - name: request team untuk review
+    conditions:
+      - label=javascript or typescript files
+    actions:
+      request_reviews:
+        users:
+          - "@honestyan"
