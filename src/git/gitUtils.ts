@@ -75,3 +75,16 @@ export const gitCommit = async (commitMessage: string) => {
     }
   }
 };
+
+export const gitPush = async () => {
+  try {
+    await execa("git", ["push"]);
+    console.log("Successfully pushed changes to remote repository");
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(`Failed to push changes: ${error.message}`);
+    } else {
+      throw new Error("Failed to push changes due to an unknown error");
+    }
+  }
+};

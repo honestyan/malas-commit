@@ -10,6 +10,8 @@ import {
   getStagedFiles,
   assertGitRepo,
   gitCommit,
+  gitAdd,
+  gitPush,
 } from "./git/gitUtils";
 import os from "os";
 import { confirm } from "@clack/prompts";
@@ -43,19 +45,37 @@ const saveConfig = (config: any) => {
 };
 
 const setConfig = (key: string, value: string) => {
-  const config = loadConfig();
+  let config: { [key: string]: any } = {};
+
+  if (fs.existsSync(configFilePath)) {
+    config = loadConfig();
+  } else {
+    console.log(
+      `Configuration file not found: ${configFilePath}. Creating a new one with the provided settings.`
+    );
+  }
+
   config[key] = value;
+
   saveConfig(config);
+
   console.log(`Configuration updated: ${key}=${value}`);
 };
 
-const runGenerate = async () => {
+const runGenerate = async (autoCommit = false) => {
   try {
     await assertGitRepo();
-    await ensureFilesAreStaged();
+
+    // Automatically stage files if `-y` is used
+    if (autoCommit) {
+      const changedFiles = await getStagedFiles();
+      await gitAdd(changedFiles);
+    } else {
+      await ensureFilesAreStaged();
+    }
 
     const stagedFiles = await getStagedFiles();
-    const diff = await getDiff(stagedFiles);
+    let diff = await getDiff(stagedFiles);
 
     if (!diff || diff.length === 0) {
       console.log(
@@ -64,19 +84,28 @@ const runGenerate = async () => {
       process.exit(1);
     }
 
-    let commitMessage = await generateCommitMessage(diff);
+    const charLimit = 50000;
+    let charCount = 0;
+    let truncatedDiff: string[] = [];
 
-    let useCommitMessage = await confirm({
-      message: `Generated Commit Message: \n\n${commitMessage}\n\nDo you want to use this commit message?`,
-      initialValue: true,
-    });
+    for (const line of diff) {
+      charCount += line.length;
+      if (charCount > charLimit) break;
+      truncatedDiff.push(line);
+    }
 
-    if (useCommitMessage) {
-      await gitCommit(commitMessage);
-    } else {
-      commitMessage = await generateCommitMessage(diff);
-      useCommitMessage = await confirm({
-        message: `Regenerated Commit Message: \n\n${commitMessage}\n\nDo you want to use this commit message?`,
+    if (charCount > charLimit) {
+      console.warn(
+        `The diff exceeds the character limit (${charLimit}). Truncating the diff and adding staged file names.`
+      );
+      truncatedDiff.push("\nStaged Files:\n", ...stagedFiles);
+    }
+
+    let commitMessage = await generateCommitMessage(truncatedDiff.join("\n"));
+
+    if (!autoCommit) {
+      let useCommitMessage = await confirm({
+        message: `Generated Commit Message: \n\n${commitMessage}\n\nDo you want to use this commit message?`,
         initialValue: true,
       });
 
@@ -86,17 +115,27 @@ const runGenerate = async () => {
         console.log("You opted not to use the generated commit message.");
         process.exit(1);
       }
+    } else {
+      // Automatically commit and push if `-y` is used
+      await gitCommit(commitMessage);
+      await gitPush();
     }
   } catch (error) {
     if (error instanceof Error) {
-      console.error(error.message);
+      console.error(`Error: ${error.message}`);
     } else {
       console.error("An unknown error occurred.");
     }
+    process.exit(2);
   }
 };
 
 const argv = yargs(hideBin(process.argv))
+  .option("y", {
+    alias: "yes",
+    type: "boolean",
+    description: "Automatically commit and push without confirmation",
+  })
   .command(
     "setConfig <key> <value>",
     "Set configuration values",

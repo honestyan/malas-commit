@@ -18,7 +18,8 @@ export const generateCommitMessage = async (diff) => {
         1. If the combined length of the file names is 60 characters or fewer, format your message as follows:
         - '[Type] (file/s name separated by commas) $commit_message'
         2. If the combined length exceeds 60 characters, omit the file list:
-        - '[Type] $commit_message' (do not include the prefix in the message).
+        - '[Type] $commit_message'
+        (do not include the prefix in the message)
         KEEP IN MIND THAT STICK TO THE POINT TO ONLY REPLY WITH MY PROMPTED MESSAGE. DO NOT ADD ANY ADDITIONAL INFORMATION
         DO NOT SAY "Here is the commit message" OR SUCH LIKE THAT. JUST PROVIDE THE COMMIT MESSAGE ITSELF.
         .

@@ -9,6 +9,9 @@
     "mls": "./out/index.js",
     "mlz": "./out/index.js"
   },
+  "engines": {
+    "node": ">=16"
+  },
   "scripts": {
     "build": "tsc",
     "start": "node out/index.js",
