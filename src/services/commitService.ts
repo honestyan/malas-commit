@@ -22,6 +22,7 @@ export const generateCommitMessage = async (diff: string) => {
         - '[Type] $commit_message'
         (do not include the prefix in the message)
         KEEP IN MIND THAT STICK TO THE POINT TO ONLY REPLY WITH MY PROMPTED MESSAGE. DO NOT ADD ANY ADDITIONAL INFORMATION
+        DO NOT SAY "Here is the commit message" OR SUCH LIKE THAT. JUST PROVIDE THE COMMIT MESSAGE ITSELF.
         .
       `,
   };
