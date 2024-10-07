@@ -37,7 +37,7 @@ You should have a GROQ_APIKEY (for free, just sign up).
 
 You can obtain it from [GROQ Console](https://console.groq.com/keys).
 
-And your Node version should be more than 16.x.x.
+And your Node version should be more than 16.0.1.
 
 ---
 
