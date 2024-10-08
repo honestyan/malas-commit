@@ -4,7 +4,10 @@ import * as path from "path";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import { ensureFilesAreStaged } from "./git/gitPrompt";
-import { generateCommitMessage } from "./services/commitService";
+import {
+  generateCommitMessage,
+  generatePullRequest,
+} from "./services/commitService";
 import {
   getDiff,
   getStagedFiles,
@@ -113,6 +116,50 @@ const runGenerate = async () => {
   }
 };
 
+const pullRequest = async () => {
+  try {
+    await assertGitRepo();
+    await ensureFilesAreStaged();
+
+    const stagedFiles = await getStagedFiles();
+    const diff = await getDiff(stagedFiles);
+
+    if (!diff || diff.length === 0) {
+      console.log(
+        "No changes detected in the staged files. Please make some changes before generating a pull request description."
+      );
+      process.exit(1);
+    }
+
+    const charLimit = 5000;
+    let charCount = 0;
+    let truncatedDiff: string[] = [];
+
+    for (const line of diff) {
+      charCount += line.length;
+      if (charCount > charLimit) break;
+      truncatedDiff.push(line);
+    }
+
+    if (charCount > charLimit) {
+      console.warn(
+        `The diff exceeds the character limit (${charLimit}). Truncating the diff and adding staged file names.`
+      );
+      truncatedDiff.push("\nStaged Files:\n", ...stagedFiles);
+    }
+
+    let pullRequest = await generatePullRequest(truncatedDiff.join("\n"));
+
+    console.log(`Generated Pull Request Description: \n\n${pullRequest}`);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    } else {
+      console.error("An unknown error occurred.");
+    }
+  }
+};
+
 const argv = yargs(hideBin(process.argv))
   .command(
     "setConfig <key> <value>",
@@ -168,6 +215,14 @@ const argv = yargs(hideBin(process.argv))
     async () => {},
     async () => {
       await runGenerate();
+    }
+  )
+  .command(
+    "pr",
+    "Generate a pull request description based on staged files",
+    async () => {},
+    async () => {
+      await pullRequest();
     }
   )
   .help().argv as any;

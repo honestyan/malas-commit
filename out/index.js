@@ -4,7 +4,10 @@ import * as path from "path";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import { ensureFilesAreStaged } from "./git/gitPrompt.js";
-import { generateCommitMessage } from "./services/commitService.js";
+import {
+  generateCommitMessage,
+  generatePullRequest,
+} from "./services/commitService.js";
 import {
   getDiff,
   getStagedFiles,
@@ -65,10 +68,11 @@ const runGenerate = async () => {
     }
     if (charCount > charLimit) {
       console.warn(
-        `The diff exceeds the character limit (${charLimit} char length). Truncating the diff and adding staged file names.`
+        `The diff exceeds the character limit (${charLimit}). Truncating the diff and adding staged file names.`
       );
+      truncatedDiff.push("\nStaged Files:\n", ...stagedFiles);
     }
-    let commitMessage = await generateCommitMessage(truncatedDiff);
+    let commitMessage = await generateCommitMessage(truncatedDiff.join("\n"));
     let useCommitMessage = await confirm({
       message: `Generated Commit Message: \n\n${commitMessage}\n\nDo you want to use this commit message?`,
       initialValue: true,
@@ -88,6 +92,42 @@ const runGenerate = async () => {
         process.exit(1);
       }
     }
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    } else {
+      console.error("An unknown error occurred.");
+    }
+  }
+};
+const pullRequest = async () => {
+  try {
+    await assertGitRepo();
+    await ensureFilesAreStaged();
+    const stagedFiles = await getStagedFiles();
+    const diff = await getDiff(stagedFiles);
+    if (!diff || diff.length === 0) {
+      console.log(
+        "No changes detected in the staged files. Please make some changes before generating a pull request description."
+      );
+      process.exit(1);
+    }
+    const charLimit = 5000;
+    let charCount = 0;
+    let truncatedDiff = [];
+    for (const line of diff) {
+      charCount += line.length;
+      if (charCount > charLimit) break;
+      truncatedDiff.push(line);
+    }
+    if (charCount > charLimit) {
+      console.warn(
+        `The diff exceeds the character limit (${charLimit}). Truncating the diff and adding staged file names.`
+      );
+      truncatedDiff.push("\nStaged Files:\n", ...stagedFiles);
+    }
+    let pullRequest = await generatePullRequest(truncatedDiff.join("\n"));
+    console.log(`Generated Pull Request Description: \n\n${pullRequest}`);
   } catch (error) {
     if (error instanceof Error) {
       console.error(error.message);
@@ -151,6 +191,14 @@ const argv = yargs(hideBin(process.argv))
     async () => {},
     async () => {
       await runGenerate();
+    }
+  )
+  .command(
+    "pr",
+    "Generate a pull request description based on staged files",
+    async () => {},
+    async () => {
+      await pullRequest();
     }
   )
   .help().argv;
