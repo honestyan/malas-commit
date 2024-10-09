@@ -67,7 +67,7 @@ const runGenerate = async () => {
       process.exit(1);
     }
 
-    const charLimit = 6000;
+    const charLimit = 5000;
     let charCount = 0;
     let truncatedDiff: string[] = [];
 

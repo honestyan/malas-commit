@@ -70,8 +70,16 @@ OR
 
 ```bash
 
-malas-commit
+mls
 
+```
+
+## Generate Pull Request Title and Description
+
+To generate a pull request title and description in Markdown format (without pushing your changes), use the following command:
+
+```bash
+malas pr
 ```
 
 ## Configuration
