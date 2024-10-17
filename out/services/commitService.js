@@ -33,7 +33,27 @@ export const generateCommitMessage = async (diff) => {
     content: `Here's the git diff:\n${diff}`,
   };
   const messages = [systemMessage, userInputMessage];
-  return await generateCompletion(messages);
+  try {
+    const commitMessage = await generateCompletion(messages);
+    if (
+      !commitMessage ||
+      commitMessage.includes("undefined") ||
+      commitMessage.includes("Here is the") ||
+      commitMessage.includes("here is the")
+    ) {
+      const errorMsg = "Invalid commit message generated.";
+      console.error(errorMsg);
+      process.exit(1);
+    }
+    return commitMessage;
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(`Failed to generate commit message: ${error.message}`);
+    } else {
+      console.error("Failed to generate commit message: Unknown error");
+    }
+    process.exit(1);
+  }
 };
 export const generatePullRequest = async (diff) => {
   const systemMessage = {
