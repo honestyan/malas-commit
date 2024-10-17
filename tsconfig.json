@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "lib": ["ES6", "ES2020", "DOM"],
+    "lib": ["ES6", "ES2020"],
     "module": "ESNext",
     "resolveJsonModule": true,
     "moduleResolution": "Node",
