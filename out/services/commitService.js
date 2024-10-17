@@ -15,14 +15,7 @@ export const generateCommitMessage = async (diff) => {
         - [Remove]: For deletions of code or functionality.
         - [Chore]: For general tasks, maintenance, or minor changes.
 
-        Example: [Update] (controllers/products.go, controllers/users.go) removed redundant BodyParser calls and directly used validated payload from Locals.
-
-        Formatting Guidelines:
-        1. If the combined length of the file names is 60 characters or fewer, format your message as follows:
-        - '[Type] (file/s name separated by commas) $commit_message'
-        2. If the combined length exceeds 60 characters, omit the file list:
-        - '[Type] $commit_message'
-        (do not include the prefix in the message).
+        Example: [Update] removed redundant BodyParser calls and directly used validated payload from Locals.
 
         KEEP IN MIND THAT STICK TO THE POINT TO ONLY REPLY WITH MY PROMPTED MESSAGE!!! DO NOT ADD ANY ADDITIONAL INFORMATION !!!
         DO NOT SAY "Here is the commit message" OR SUCH LIKE THAT. JUST REPLY ONLY THE COMMIT MESSAGE ITSELF !!!
@@ -38,12 +31,14 @@ export const generateCommitMessage = async (diff) => {
     if (
       !commitMessage ||
       commitMessage.includes("undefined") ||
-      commitMessage.includes("Here is the") ||
-      commitMessage.includes("here is the")
+      commitMessage.includes("Here is") ||
+      commitMessage.includes("here is") ||
+      commitMessage.includes("here's") ||
+      commitMessage.includes("Here's") ||
+      commitMessage.includes("Commit") ||
+      commitMessage.includes("commit")
     ) {
-      const errorMsg = "Invalid commit message generated.";
-      console.error(errorMsg);
-      process.exit(1);
+      throw new Error("Invalid commit message generated.");
     }
     return commitMessage;
   } catch (error) {
