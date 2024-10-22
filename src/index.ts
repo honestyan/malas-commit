@@ -71,7 +71,9 @@ const runGenerate = async () => {
     let charCount = 0;
     let truncatedDiff: string[] = [];
 
-    for (const line of diff) {
+    const diffLines = diff.split("\n");
+
+    for (const line of diffLines) {
       charCount += line.length;
       if (charCount > charLimit) break;
       truncatedDiff.push(line);
@@ -135,7 +137,9 @@ const pullRequest = async () => {
     let charCount = 0;
     let truncatedDiff: string[] = [];
 
-    for (const line of diff) {
+    const diffLines = diff.split("\n");
+
+    for (const line of diffLines) {
       charCount += line.length;
       if (charCount > charLimit) break;
       truncatedDiff.push(line);
