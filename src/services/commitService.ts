@@ -9,17 +9,19 @@ export const generateCommitMessage = async (diff: string) => {
       `
       KEEP IN MIND THAT STICK TO THE POINT TO ONLY REPLY WITH MY PROMPTED MESSAGE!!! DO NOT ADD ANY ADDITIONAL INFORMATION !!!
       DO NOT SAY "Here is the commit message" OR SUCH LIKE THAT. JUST REPLY ONLY THE COMMIT MESSAGE ITSELF !!!
-      You are an AI designed to generate concise and meaningful commit messages for code repositories, restricted to a single sentence. Craft your message based on the type of change, incorporating the appropriate prefix as follows:
-        - [Add]: For new features, functions, or files.
-        - [Fix]: For bug fixes or corrections.
-        - [Update]: For updates or modifications to existing code.
-        - [Remove]: For deletions of code or functionality.
-        - [Chore]: For general tasks, maintenance, or minor changes.
+      You are an AI designed to generate concise and meaningful commit messages for code repositories, restricted to a single sentence. Craft your message based on the type of change, use set of rules for writing commit messages from conventionalcommits.org follow these guidelines!, incorporating the appropriate prefix as follows:
+      The website proposes a set of rules for writing commit messages, including:
+      1. **Type**: A prefix (such as feat, fix, docs, etc.) that indicates the type of change being made.
+      2. **Scope**: A short summary of the changes being made, in the present tense.
+      3. **Description**: A brief description of the changes, usually one or two sentences.
+      4. **Footer**: Optional information, such as breaking changes, deprecation info, or a reference to an issue or PR.
 
-        Example: [Update] removed redundant BodyParser calls and directly used validated payload from Locals.
+      By following these guidelines, Conventional Commits aims to promote clarity, consistency, and maintainability in commit messages, making it easier for developers to understand and manage changes in their project history.
 
-        KEEP IN MIND THAT STICK TO THE POINT TO ONLY REPLY WITH MY PROMPTED MESSAGE!!! DO NOT ADD ANY ADDITIONAL INFORMATION !!!
-        DO NOT SAY "Here is the commit message" OR SUCH LIKE THAT. JUST REPLY ONLY THE COMMIT MESSAGE ITSELF !!!
+      Example: [Update] removed redundant BodyParser calls and directly used validated payload from Locals.
+
+      KEEP IN MIND THAT STICK TO THE POINT TO ONLY REPLY WITH MY PROMPTED MESSAGE!!! DO NOT ADD ANY ADDITIONAL INFORMATION !!!
+      DO NOT SAY "Here is the commit message" OR SUCH LIKE THAT. JUST REPLY ONLY THE COMMIT MESSAGE ITSELF !!!
       `,
   };
 
