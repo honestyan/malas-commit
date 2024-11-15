@@ -99,7 +99,8 @@ You can configure **malas-commit** by creating a `~/.malas-commit.json` file in 
 - [x] Implement error handling for failed network requests.
 - [ ] Refactor the code for better readability.
 - [ ] Write unit tests for the new features.
-- [ ] Add an auto-generated pull request description generator related to changes using Markdown format code.
+- [x] Add an auto-generated pull request description generator related to changes using Markdown format code.
+- [x] Migrate to semantic commit. ([Semantic Commit Guide](https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716))
 
 ## Contributing
 
