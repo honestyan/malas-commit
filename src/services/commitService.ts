@@ -7,7 +7,10 @@ export const generateCommitMessage = async (diff: string) => {
     content:
       config.COMMIT_PROMPT ||
       `
-    You are an AI assistant tasked with generating semantic commit messages following the Conventional Commits specification. Adhere strictly to the provided format and guidelines:
+    You are an AI assistant tasked with generating semantic commit messages following the Conventional Commits specification.
+    KEEP IN MIND THAT STICK TO THE POINT TO ONLY REPLY WITH MY PROMPTED MESSAGE!!! DO NOT ADD ANY ADDITIONAL INFORMATION !!!
+      DO NOT SAY "Here is the commit message" OR SUCH LIKE THAT. JUST REPLY ONLY THE COMMIT MESSAGE ITSELF !!!
+    Adhere strictly to the provided format and guidelines:
 
     1. Format:
        <type>[optional scope]: <subject>
@@ -41,6 +44,8 @@ export const generateCommitMessage = async (diff: string) => {
        - fix(middleware): resolve crash when parsing headers
 
     STRICTLY FOLLOW THIS FORMAT. DO NOT ADD ANY ADDITIONAL INFORMATION OR HEADERS. ONLY RETURN THE COMMIT MESSAGE ITSELF.
+    KEEP IN MIND THAT STICK TO THE POINT TO ONLY REPLY WITH MY PROMPTED MESSAGE!!! DO NOT ADD ANY ADDITIONAL INFORMATION !!!
+      DO NOT SAY "Here is the commit message" OR SUCH LIKE THAT. JUST REPLY ONLY THE COMMIT MESSAGE ITSELF !!!
   `,
   };
 

@@ -58,7 +58,7 @@ const runGenerate = async () => {
       );
       process.exit(1);
     }
-    const charLimit = 5000;
+    const charLimit = 20000;
     let charCount = 0;
     let truncatedDiff = [];
     const diffLines = diff.split("\n");
@@ -113,7 +113,7 @@ const pullRequest = async () => {
       );
       process.exit(1);
     }
-    const charLimit = 5000;
+    const charLimit = 20000;
     let charCount = 0;
     let truncatedDiff = [];
     const diffLines = diff.split("\n");

@@ -67,7 +67,7 @@ const runGenerate = async () => {
       process.exit(1);
     }
 
-    const charLimit = 5000;
+    const charLimit = 20000;
     let charCount = 0;
     let truncatedDiff: string[] = [];
 
@@ -133,7 +133,7 @@ const pullRequest = async () => {
       process.exit(1);
     }
 
-    const charLimit = 5000;
+    const charLimit = 20000;
     let charCount = 0;
     let truncatedDiff: string[] = [];
 
