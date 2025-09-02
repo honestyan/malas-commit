@@ -8,7 +8,7 @@ export const groqClient = axios.create({
         "Content-Type": "application/json",
     },
 });
-export const generateCompletion = async (messages, model = "llama3-8b-8192") => {
+export const generateCompletion = async (messages, model = "llama-3.1-8b-instant") => {
     try {
         const response = await groqClient.post("", {
             model,

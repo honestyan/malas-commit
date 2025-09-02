@@ -18,7 +18,7 @@ interface Message {
 
 export const generateCompletion = async (
   messages: Message[],
-  model = "llama3-8b-8192"
+  model = "llama-3.1-8b-instant"
 ) => {
   try {
     const response = await groqClient.post("", {
