@@ -4,7 +4,7 @@
 [![npm downloads](https://img.shields.io/npm/dt/malas-commit.svg)](https://www.npmjs.com/package/malas-commit)
 [![License](https://img.shields.io/npm/l/malas-commit.svg)](https://github.com/honestyan/malas-commit/blob/main/LICENSE)
 
-**malas-commit**: The ultimate tool for developers who need automated, meaningful commit messages without the hassle! This fast and efficient NPM package uses the Groq API to generate smart, context-aware commit messages in seconds. Perfect for boosting productivity in your Git workflows.
+**malas-commit**: The ultimate tool for developers who need automated, meaningful commit messages without the hassle! This fast and efficient NPM package uses AI (Groq or Gemini) to generate smart, context-aware commit messages in seconds. With automatic fallback support, you get reliable generation even when one API has issues. Perfect for boosting productivity in your Git workflows.
 
 <p align="center">
   <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjRtOWxpYjFyYTlvb3F3Z3dxejViaWpib3Frdzlwb3VyOG94OTQ4eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/PklUQkgci2ogb3vPZp/giphy.gif" alt="malas-commit">
@@ -26,18 +26,34 @@ The word _malas_ in Indonesian means **lazy**. Often, developers feel lazy or la
 
 ## Features
 
-- **Easy Configuration**: Quickly set up and get started with your API key and preferred configuration.
-- **Automated Commit Messages**: No more thinking about commit messages! Generate them instantly.
-- **Global Installation**: Install once, use everywhere.
-- **Simple Command**: Generate messages with a single command.
+- 🤖 **Dual AI Support**: Use Groq or Gemini APIs (or both with automatic fallback)
+- 🔄 **Automatic Fallback**: If Groq fails, automatically switches to Gemini
+- 📏 **Smart Context Limits**: Dynamic diff limits based on API (200K chars for Gemini, 20K for Groq)
+- ⚡ **Easy Configuration**: Quickly set up and get started with your API key
+- 📝 **Automated Commit Messages**: No more thinking about commit messages! Generate them instantly
+- 🌍 **Global Installation**: Install once, use everywhere
+- 🎯 **Simple Command**: Generate messages with a single command
 
-## Requirement
+## Requirements
 
-You should have a GROQ_APIKEY (for free, just sign up).
+You need at least ONE of the following API keys (both are free!):
 
-You can obtain it from [GROQ Console](https://console.groq.com/keys).
+### Option 1: Groq API (Recommended for speed)
+- Sign up at [Groq Console](https://console.groq.com/keys)
+- Fast inference with Llama models
+- Free tier: ~32K token context
 
-And your Node version should be more than v16.0.1.
+### Option 2: Gemini API (Recommended for large diffs)
+- Get your key from [Google AI Studio](https://aistudio.google.com/apikey)
+- Supports much larger context (up to 1M tokens)
+- Free tier: 1,500 requests/day
+
+### Option 3: Both APIs (Best reliability)
+- Configure both for automatic fallback
+- Groq is tried first, Gemini as backup
+- Maximum reliability and uptime
+
+**Node.js**: Version 16.0.1 or higher
 
 ---
 
@@ -47,15 +63,24 @@ To install the package globally, run the following command:
 
 ```bash
 npm i malas-commit -g
-
 ```
 
-Set GROQ_APIKEY:
+### Configuration
 
+**Option 1: Groq only (fast)**
 ```bash
-
 malas setConfig GROQ_APIKEY <your-groq-apikey>
+```
 
+**Option 2: Gemini only (large context)**
+```bash
+malas setConfig GEMINI_APIKEY <your-gemini-apikey>
+```
+
+**Option 3: Both (automatic fallback)**
+```bash
+malas setConfig GROQ_APIKEY <your-groq-apikey>
+malas setConfig GEMINI_APIKEY <your-gemini-apikey>
 ```
 
 ## How to use
@@ -82,16 +107,32 @@ To generate a pull request title and description in Markdown format (without pus
 malas pr
 ```
 
-## Configuration
+## Advanced Configuration
 
-You can configure **malas-commit** by creating a `~/.malas-commit.json` file in the home_dir. Here is an example configuration:
+You can configure **malas-commit** by editing the `~/.malas-commit` file. Example configuration:
 
 ```json
 {
   "GROQ_APIKEY": "<your-groq-apikey>",
-  "COMMIT_PROMPT": "<your-custom-promt>" // Leave it blank if you use default prompt instead
+  "GEMINI_APIKEY": "<your-gemini-apikey>",
+  "COMMIT_PROMPT": "<your-custom-prompt>" // Leave blank to use default
 }
 ```
+
+### How Fallback Works
+
+1. **Groq First**: If `GROQ_APIKEY` is set, Groq is tried first
+2. **Gemini Fallback**: If Groq fails and `GEMINI_APIKEY` is set, automatically switches to Gemini
+3. **Gemini Only**: If only `GEMINI_APIKEY` is set, uses Gemini directly
+4. **Error**: If no API keys are configured, shows an error
+
+### Dynamic Context Limits
+
+The diff character limit automatically adjusts based on your configuration:
+- **Gemini only**: 200,000 characters (10x larger!)
+- **Groq or Both**: 20,000 characters (safe for Groq)
+
+This means with Gemini, you can process much larger codebases without truncation!
 
 ## To-Do List
 
