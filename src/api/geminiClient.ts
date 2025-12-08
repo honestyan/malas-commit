@@ -1,7 +1,7 @@
 import axios from "axios";
 import { config } from "../config.js";
 
-const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent";
+const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
 
 interface Message {
   role: "system" | "user" | "assistant";
@@ -61,7 +61,16 @@ export const generateCompletionWithGemini = async (
   } catch (error: unknown) {
     let errMessage: string;
 
-    if (error instanceof Error) {
+    if (axios.isAxiosError(error)) {
+      // Log the full error details for debugging
+      console.error("Gemini API Response Error:", {
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        message: error.message
+      });
+      errMessage = error.response?.data?.error?.message || error.message;
+    } else if (error instanceof Error) {
       errMessage = error.message;
     } else {
       errMessage = "An unknown error occurred";

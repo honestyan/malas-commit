@@ -23,6 +23,7 @@ export const generateCompletion = async (
       console.log("✓ Successfully generated with Groq");
       return result;
     } catch (error) {
+      console.error("Groq API Error:", error instanceof Error ? error.message : error);
       console.warn("⚠ Groq API failed, trying Gemini fallback...");
       
       // Fall back to Gemini if available
@@ -32,6 +33,7 @@ export const generateCompletion = async (
           console.log("✓ Successfully generated with Gemini");
           return result;
         } catch (geminiError) {
+          console.error("Gemini API Error:", geminiError instanceof Error ? geminiError.message : geminiError);
           throw new Error(
             `Both Groq and Gemini APIs failed. Groq: ${error}, Gemini: ${geminiError}`
           );
@@ -52,6 +54,7 @@ export const generateCompletion = async (
       console.log("✓ Successfully generated with Gemini");
       return result;
     } catch (error) {
+      console.error("Gemini API Error:", error instanceof Error ? error.message : error);
       throw new Error(`Gemini API failed: ${error}`);
     }
   }

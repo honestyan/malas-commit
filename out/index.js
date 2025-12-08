@@ -35,7 +35,7 @@ const saveConfig = (config) => {
 };
 const getCharLimit = () => {
     if (!config.GROQ_APIKEY && config.GEMINI_APIKEY) {
-        return 200000; // Gemini 2.0 Flash can handle up to ~1M tokens
+        return 60000; // Maximized for Gemini's capacity - hits per-minute limit before daily quota
     }
     return 20000;
 };
