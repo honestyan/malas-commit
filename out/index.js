@@ -8,6 +8,7 @@ import { generateCommitMessage, generatePullRequest, } from "./services/commitSe
 import { getDiff, getStagedFiles, assertGitRepo, gitCommit, } from "./git/gitUtils.js";
 import os from "os";
 import { confirm } from "@clack/prompts";
+import { config } from "./config.js";
 const configFilePath = path.join(os.homedir(), ".malas-commit");
 const loadConfig = () => {
     if (!fs.existsSync(configFilePath)) {
@@ -32,6 +33,12 @@ const loadConfig = () => {
 const saveConfig = (config) => {
     fs.writeFileSync(configFilePath, JSON.stringify(config, null, 2));
 };
+const getCharLimit = () => {
+    if (!config.GROQ_APIKEY && config.GEMINI_APIKEY) {
+        return 200000; // Gemini 2.0 Flash can handle up to ~1M tokens
+    }
+    return 20000;
+};
 const setConfig = (key, value) => {
     const config = loadConfig();
     config[key] = value;
@@ -48,7 +55,7 @@ const runGenerate = async () => {
             console.log("No changes detected in the staged files. Please make some changes before generating a commit message.");
             process.exit(1);
         }
-        const charLimit = 20000;
+        const charLimit = getCharLimit();
         let charCount = 0;
         let truncatedDiff = [];
         const diffLines = diff.split("\n");
@@ -104,7 +111,7 @@ const pullRequest = async () => {
             console.log("No changes detected in the staged files. Please make some changes before generating a pull request description.");
             process.exit(1);
         }
-        const charLimit = 20000;
+        const charLimit = getCharLimit();
         let charCount = 0;
         let truncatedDiff = [];
         const diffLines = diff.split("\n");

@@ -16,6 +16,7 @@ import {
 } from "./git/gitUtils";
 import os from "os";
 import { confirm } from "@clack/prompts";
+import { config } from "./config";
 
 const configFilePath = path.join(os.homedir(), ".malas-commit");
 
@@ -45,6 +46,14 @@ const saveConfig = (config: any) => {
   fs.writeFileSync(configFilePath, JSON.stringify(config, null, 2));
 };
 
+const getCharLimit = (): number => {
+  if (!config.GROQ_APIKEY && config.GEMINI_APIKEY) {
+    return 200000; // Gemini 2.0 Flash can handle up to ~1M tokens
+  }
+
+  return 20000;
+};
+
 const setConfig = (key: string, value: string) => {
   const config = loadConfig();
   config[key] = value;
@@ -67,7 +76,7 @@ const runGenerate = async () => {
       process.exit(1);
     }
 
-    const charLimit = 20000;
+    const charLimit = getCharLimit();
     let charCount = 0;
     let truncatedDiff: string[] = [];
 
@@ -133,7 +142,7 @@ const pullRequest = async () => {
       process.exit(1);
     }
 
-    const charLimit = 20000;
+    const charLimit = getCharLimit();
     let charCount = 0;
     let truncatedDiff: string[] = [];
 
