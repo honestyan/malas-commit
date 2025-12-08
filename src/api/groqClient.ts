@@ -16,10 +16,10 @@ interface Message {
   content: string;
 }
 
-export const generateCompletion = async (
+export const generateCompletionWithGroq = async (
   messages: Message[],
   model = "llama-3.1-8b-instant"
-) => {
+): Promise<string> => {
   try {
     const response = await groqClient.post("", {
       model,
@@ -35,6 +35,6 @@ export const generateCompletion = async (
       errMessage = "An unknown error occurred";
     }
 
-    console.error(errMessage);
+    throw new Error(`Groq API error: ${errMessage}`);
   }
 };

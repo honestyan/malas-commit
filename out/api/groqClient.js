@@ -8,7 +8,7 @@ export const groqClient = axios.create({
         "Content-Type": "application/json",
     },
 });
-export const generateCompletion = async (messages, model = "llama-3.1-8b-instant") => {
+export const generateCompletionWithGroq = async (messages, model = "llama-3.1-8b-instant") => {
     try {
         const response = await groqClient.post("", {
             model,
@@ -24,6 +24,6 @@ export const generateCompletion = async (messages, model = "llama-3.1-8b-instant
         else {
             errMessage = "An unknown error occurred";
         }
-        console.error(errMessage);
+        throw new Error(`Groq API error: ${errMessage}`);
     }
 };

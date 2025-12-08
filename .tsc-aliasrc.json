@@ -1,0 +1,12 @@
+{
+  "verbose": false,
+  "resolveFullPaths": true,
+  "replacers": {
+    "exts": {
+      "extGlob": ".js",
+      "extMapping": {
+        ".js": [".js", ".ts"]
+      }
+    }
+  }
+}

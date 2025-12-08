@@ -4,6 +4,7 @@ import os from "os";
 const configFilePath = path.join(os.homedir(), ".malas-commit");
 const defaultConfig = {
     GROQ_APIKEY: "",
+    GEMINI_APIKEY: "",
     COMMIT_PROMPT: "",
 };
 const loadConfig = () => {
@@ -28,5 +29,6 @@ const saveConfig = (config) => {
 const loadedConfig = loadConfig();
 export const config = {
     GROQ_APIKEY: process.env.GROQ_APIKEY || loadedConfig.GROQ_APIKEY || "",
+    GEMINI_APIKEY: process.env.GEMINI_APIKEY || loadedConfig.GEMINI_APIKEY || "",
     COMMIT_PROMPT: process.env.COMMIT_PROMPT || loadedConfig.COMMIT_PROMPT || "",
 };

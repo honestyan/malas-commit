@@ -1,7 +1,7 @@
 import { generateCommitMessage } from "../src/services/commitService";
-import { generateCompletion } from "../src/api/groqClient";
+import { generateCompletion } from "../src/api/aiClient";
 
-jest.mock("../src/api/groqClient", () => ({
+jest.mock("../src/api/aiClient", () => ({
   generateCompletion: jest.fn(),
 }));
 

@@ -1,4 +1,4 @@
-import { generateCompletion } from "../api/groqClient";
+import { generateCompletion } from "../api/aiClient";
 import { config } from "../config";
 
 export const generateCommitMessage = async (diff: string) => {
