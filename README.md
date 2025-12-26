@@ -33,6 +33,7 @@ The word _malas_ in Indonesian means **lazy**. Often, developers feel lazy or la
 - 📝 **Automated Commit Messages**: No more thinking about commit messages! Generate them instantly
 - 🌍 **Global Installation**: Install once, use everywhere
 - 🎯 **Simple Command**: Generate messages with a single command
+- 🔀 **Flexible PR Generation**: Generate pull request descriptions from staged files or multiple commits
 
 ## Requirements
 
@@ -106,6 +107,38 @@ To generate a pull request title and description in Markdown format (without pus
 ```bash
 malas pr
 ```
+
+**malas pr** now supports two workflows:
+
+### Workflow 1: Multiple Commits (Recommended for PR)
+Perfect for when you've already committed your changes and want to generate a PR description:
+
+```bash
+git add <file1>
+git commit -m "message 1"
+
+git add <file2>
+git commit -m "message 2"
+
+# ... more commits ...
+
+malas pr  # Generates PR from ALL commits in your branch
+```
+
+This mode will:
+- Automatically detect your current branch
+- Find all commits since the base branch (main/master)
+- Generate a comprehensive PR description based on all changes
+
+### Workflow 2: Staged Files (Backward Compatible)
+Use this when you want to preview a PR description before committing:
+
+```bash
+git add <file1> <file2>
+malas pr  # Generates PR from staged files
+```
+
+**Note**: If you have staged files, `malas pr` will use them. Otherwise, it will automatically use your commits.
 
 ## Advanced Configuration
 
