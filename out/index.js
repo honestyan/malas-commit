@@ -5,7 +5,7 @@ import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import { ensureFilesAreStaged } from "./git/gitPrompt.js";
 import { generateCommitMessage, generatePullRequest, } from "./services/commitService.js";
-import { getDiff, getStagedFiles, assertGitRepo, gitCommit, } from "./git/gitUtils.js";
+import { getDiff, getStagedFiles, assertGitRepo, gitCommit, getDiffFromBaseBranch, getCommitMessages, getCurrentBranch, getBaseBranch, } from "./git/gitUtils.js";
 import os from "os";
 import { confirm } from "@clack/prompts";
 import { config } from "./config.js";
@@ -104,12 +104,45 @@ const runGenerate = async () => {
 const pullRequest = async () => {
     try {
         await assertGitRepo();
-        await ensureFilesAreStaged();
         const stagedFiles = await getStagedFiles();
-        const diff = await getDiff(stagedFiles);
-        if (!diff || diff.length === 0) {
-            console.log("No changes detected in the staged files. Please make some changes before generating a pull request description.");
-            process.exit(1);
+        let diff;
+        let commitMessages = [];
+        let usingStagedFiles = false;
+        // Check if there are staged files
+        if (stagedFiles.length > 0) {
+            // Using staged files (backward compatible)
+            console.log("Detecting staged files. Using staged files mode...");
+            usingStagedFiles = true;
+            diff = await getDiff(stagedFiles);
+            if (!diff || diff.length === 0) {
+                console.log("No changes detected in the staged files. Please make some changes before generating a pull request description.");
+                process.exit(1);
+            }
+        }
+        else {
+            // Using commits from branch
+            const currentBranch = await getCurrentBranch();
+            const baseBranch = await getBaseBranch();
+            console.log(`No staged files detected. Using commits from branch '${currentBranch}' (base: ${baseBranch})...`);
+            if (currentBranch === baseBranch) {
+                console.error(`You are currently on the base branch (${baseBranch}). Please switch to a feature branch or stage some files to generate a pull request.`);
+                process.exit(1);
+            }
+            // Get commits and diff from base branch
+            commitMessages = await getCommitMessages();
+            if (commitMessages.length === 0) {
+                console.log(`No commits found on branch '${currentBranch}' since '${baseBranch}'. Please make some commits or stage some files before generating a pull request description.`);
+                process.exit(1);
+            }
+            console.log(`Found ${commitMessages.length} commit(s) on branch '${currentBranch}':`);
+            commitMessages.forEach((msg, index) => {
+                console.log(`  ${index + 1}. ${msg}`);
+            });
+            diff = await getDiffFromBaseBranch();
+            if (!diff || diff.length === 0) {
+                console.log("No changes detected in the commits. Please make some changes before generating a pull request description.");
+                process.exit(1);
+            }
         }
         const charLimit = getCharLimit();
         let charCount = 0;
@@ -122,11 +155,16 @@ const pullRequest = async () => {
             truncatedDiff.push(line);
         }
         if (charCount > charLimit) {
-            console.warn(`The diff exceeds the character limit (${charLimit}). Truncating the diff and adding staged file names.`);
-            truncatedDiff.push("\nStaged Files:\n", ...stagedFiles);
+            console.warn(`The diff exceeds the character limit (${charLimit}). Truncating the diff.`);
+            if (usingStagedFiles) {
+                truncatedDiff.push("\nStaged Files:\n", ...stagedFiles);
+            }
+            else {
+                truncatedDiff.push("\nCommit Messages:\n", ...commitMessages.map((msg, idx) => `${idx + 1}. ${msg}`));
+            }
         }
         let pullRequest = await generatePullRequest(truncatedDiff.join("\n"));
-        console.log(`Generated Pull Request Description: \n\n${pullRequest}`);
+        console.log(`\nGenerated Pull Request Description: \n\n${pullRequest}`);
     }
     catch (error) {
         if (error instanceof Error) {
