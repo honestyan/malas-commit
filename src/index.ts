@@ -131,7 +131,7 @@ const runGenerate = async () => {
   }
 };
 
-const pullRequest = async () => {
+const pullRequest = async (baseArg?: string) => {
   try {
     await assertGitRepo();
 
@@ -156,7 +156,7 @@ const pullRequest = async () => {
     } else {
       // Using commits from branch
       const currentBranch = await getCurrentBranch();
-      const baseBranch = await getBaseBranch();
+      const baseBranch = baseArg || await getBaseBranch();
 
       console.log(
         `No staged files detected. Using commits from branch '${currentBranch}' (base: ${baseBranch})...`
@@ -170,7 +170,7 @@ const pullRequest = async () => {
       }
 
       // Get commits and diff from base branch
-      commitMessages = await getCommitMessages();
+      commitMessages = await getCommitMessages(baseBranch);
 
       if (commitMessages.length === 0) {
         console.log(
@@ -294,9 +294,15 @@ const argv = yargs(hideBin(process.argv))
   .command(
     "pr",
     "Generate a pull request description based on staged files",
-    async () => {},
-    async () => {
-      await pullRequest();
+    (yargs) => {
+      return yargs.option("base", {
+        alias: "b",
+        describe: "Base branch for pull request (default: auto-detected)",
+        type: "string",
+      });
+    },
+    async (argv) => {
+      await pullRequest(argv.base);
     }
   )
   .help().argv as any;
