@@ -125,6 +125,15 @@ git commit -m "message 2"
 malas pr  # Generates PR from ALL commits in your branch
 ```
 
+### Using a Custom Base Branch
+By default, malas pr compares your current branch against the detected base branch (typically main). You can override this by specifying a different base branch using the --base option:
+```bash
+# Compare 'development' branch against 'staging' instead of 'main'
+malas pr --base staging
+
+# Compare 'feature-branch' against 'develop'
+malas pr --base develop
+```
 This mode will:
 - Automatically detect your current branch
 - Find all commits since the base branch (main/master)
@@ -138,7 +147,7 @@ git add <file1> <file2>
 malas pr  # Generates PR from staged files
 ```
 
-**Note**: If you have staged files, `malas pr` will use them. Otherwise, it will automatically use your commits.
+**Note**: If you have staged files, `malas pr` will use them. Otherwise, it will automatically use your commits. When using commits, the `--base` argument allows you to specify the branch to compare against.
 
 ## Advanced Configuration
 

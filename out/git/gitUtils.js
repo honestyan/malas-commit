@@ -184,9 +184,9 @@ export const getDiffFromBaseBranch = async () => {
         }
     }
 };
-export const getCommitMessages = async () => {
+export const getCommitMessages = async (targetBranch) => {
     try {
-        const baseBranch = await getBaseBranch();
+        const baseBranch = targetBranch || await getBaseBranch();
         const { stdout: messages } = await execa("git", [
             "log",
             `${baseBranch}..HEAD`,

@@ -201,9 +201,9 @@ export const getDiffFromBaseBranch = async (): Promise<string> => {
   }
 };
 
-export const getCommitMessages = async (): Promise<string[]> => {
+export const getCommitMessages = async (targetBranch: string): Promise<string[]> => {
   try {
-    const baseBranch = await getBaseBranch();
+    const baseBranch = targetBranch || await getBaseBranch();
 
     const { stdout: messages } = await execa("git", [
       "log",

@@ -101,7 +101,7 @@ const runGenerate = async () => {
         }
     }
 };
-const pullRequest = async () => {
+const pullRequest = async (baseArg) => {
     try {
         await assertGitRepo();
         const stagedFiles = await getStagedFiles();
@@ -122,14 +122,14 @@ const pullRequest = async () => {
         else {
             // Using commits from branch
             const currentBranch = await getCurrentBranch();
-            const baseBranch = await getBaseBranch();
+            const baseBranch = baseArg || await getBaseBranch();
             console.log(`No staged files detected. Using commits from branch '${currentBranch}' (base: ${baseBranch})...`);
             if (currentBranch === baseBranch) {
                 console.error(`You are currently on the base branch (${baseBranch}). Please switch to a feature branch or stage some files to generate a pull request.`);
                 process.exit(1);
             }
             // Get commits and diff from base branch
-            commitMessages = await getCommitMessages();
+            commitMessages = await getCommitMessages(baseBranch);
             if (commitMessages.length === 0) {
                 console.log(`No commits found on branch '${currentBranch}' since '${baseBranch}'. Please make some commits or stage some files before generating a pull request description.`);
                 process.exit(1);
@@ -213,8 +213,14 @@ const argv = yargs(hideBin(process.argv))
     .command("generate", "Generate a commit message based on staged files", async () => { }, async () => {
     await runGenerate();
 })
-    .command("pr", "Generate a pull request description based on staged files", async () => { }, async () => {
-    await pullRequest();
+    .command("pr", "Generate a pull request description based on staged files", (yargs) => {
+    return yargs.option("base", {
+        alias: "b",
+        describe: "Base branch for pull request (default: auto-detected)",
+        type: "string",
+    });
+}, async (argv) => {
+    await pullRequest(argv.base);
 })
     .help().argv;
 if (Array.isArray(argv._) && argv._.length === 0) {
