@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import * as fs from "fs";
 import * as path from "path";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
@@ -8,31 +7,8 @@ import { generateCommitMessage, generatePullRequest, } from "./services/commitSe
 import { getDiff, getStagedFiles, assertGitRepo, gitCommit, getDiffFromBaseBranch, getCommitMessages, getCurrentBranch, getBaseBranch, } from "./git/gitUtils.js";
 import os from "os";
 import { confirm } from "@clack/prompts";
-import { config } from "./config.js";
+import { config, loadConfig, saveConfig } from "./config.js";
 const configFilePath = path.join(os.homedir(), ".malas-commit");
-const loadConfig = () => {
-    if (!fs.existsSync(configFilePath)) {
-        console.warn(`Configuration file not found: ${configFilePath}. Creating a new one.`);
-        saveConfig({});
-        return {};
-    }
-    try {
-        const configFile = fs.readFileSync(configFilePath, "utf-8");
-        return JSON.parse(configFile);
-    }
-    catch (err) {
-        if (err instanceof Error) {
-            console.error(`Error reading config: ${err.message}`);
-        }
-        else {
-            console.error(`Error reading config: ${String(err)}`);
-        }
-        return {};
-    }
-};
-const saveConfig = (config) => {
-    fs.writeFileSync(configFilePath, JSON.stringify(config, null, 2));
-};
 const getCharLimit = () => {
     if (!config.GROQ_APIKEY && config.GEMINI_APIKEY) {
         return 60000; // Maximized for Gemini's capacity - hits per-minute limit before daily quota
@@ -40,12 +16,12 @@ const getCharLimit = () => {
     return 20000;
 };
 const setConfig = (key, value) => {
-    const config = loadConfig();
-    config[key] = value;
-    saveConfig(config);
+    const currentConfig = loadConfig();
+    currentConfig[key] = value;
+    saveConfig(currentConfig);
     console.log(`Configuration updated: ${key}=${value}`);
 };
-const runGenerate = async () => {
+const runGenerate = async (model) => {
     try {
         await assertGitRepo();
         await ensureFilesAreStaged();
@@ -69,7 +45,7 @@ const runGenerate = async () => {
             console.warn(`The diff exceeds the character limit (${charLimit}). Truncating the diff and adding staged file names.`);
             truncatedDiff.push("\nStaged Files:\n", ...stagedFiles);
         }
-        let commitMessage = await generateCommitMessage(truncatedDiff.join("\n"));
+        let commitMessage = await generateCommitMessage(truncatedDiff.join("\n"), model);
         let useCommitMessage = await confirm({
             message: `Generated Commit Message: \n\n${commitMessage}\n\nDo you want to use this commit message?`,
             initialValue: true,
@@ -78,7 +54,7 @@ const runGenerate = async () => {
             await gitCommit(commitMessage);
         }
         else {
-            commitMessage = await generateCommitMessage(diff);
+            commitMessage = await generateCommitMessage(diff, model);
             useCommitMessage = await confirm({
                 message: `Regenerated Commit Message: \n\n${commitMessage}\n\nDo you want to use this commit message?`,
                 initialValue: true,
@@ -101,7 +77,7 @@ const runGenerate = async () => {
         }
     }
 };
-const pullRequest = async (baseArg) => {
+const pullRequest = async (baseArg, model) => {
     try {
         await assertGitRepo();
         const stagedFiles = await getStagedFiles();
@@ -163,7 +139,7 @@ const pullRequest = async (baseArg) => {
                 truncatedDiff.push("\nCommit Messages:\n", ...commitMessages.map((msg, idx) => `${idx + 1}. ${msg}`));
             }
         }
-        let pullRequest = await generatePullRequest(truncatedDiff.join("\n"));
+        let pullRequest = await generatePullRequest(truncatedDiff.join("\n"), model);
         console.log(`\nGenerated Pull Request Description: \n\n${pullRequest}`);
     }
     catch (error) {
@@ -176,7 +152,12 @@ const pullRequest = async (baseArg) => {
     }
 };
 const argv = yargs(hideBin(process.argv))
-    .command("setConfig <key> <value>", "Set configuration values", (yargs) => {
+    .option("model", {
+    alias: "m",
+    describe: "AI model to use (e.g. llama-3.3-70b-versatile, gemini-2.0-flash)",
+    type: "string",
+})
+    .command("setConfig <key> <value>", "Set configuration values (e.g. GROQ_APIKEY, GEMINI_APIKEY, GROQ_MODEL, GEMINI_MODEL, COMMIT_PROMPT)", (yargs) => {
     return yargs
         .positional("key", {
         describe: "Config key",
@@ -187,11 +168,9 @@ const argv = yargs(hideBin(process.argv))
         type: "string",
     });
 }, (argv) => {
-    loadConfig();
     const key = argv.key;
     const value = argv.value;
     setConfig(key, value);
-    console.log(`Configuration updated: ${key}=${value}`);
 })
     .command("getConfig [key]", "Get configuration value", (yargs) => {
     return yargs.positional("key", {
@@ -199,30 +178,42 @@ const argv = yargs(hideBin(process.argv))
         type: "string",
     });
 }, (argv) => {
-    const config = loadConfig();
+    const currentConfig = loadConfig();
     if (argv.key) {
-        console.log(`${argv.key}=${config[argv.key] || "Not Set"}`);
+        console.log(`${argv.key}=${currentConfig[argv.key] || "Not Set"}`);
     }
     else {
-        console.log(config);
+        console.log(currentConfig);
     }
 })
     .command("getConfigPath", "Get the path of the configuration file", () => { }, () => {
     console.log(`Configuration file path: ${configFilePath}`);
 })
-    .command("generate", "Generate a commit message based on staged files", async () => { }, async () => {
-    await runGenerate();
-})
-    .command("pr", "Generate a pull request description based on staged files", (yargs) => {
-    return yargs.option("base", {
-        alias: "b",
-        describe: "Base branch for pull request (default: auto-detected)",
+    .command("generate", "Generate a commit message based on staged files", (yargs) => {
+    return yargs.option("model", {
+        alias: "m",
+        describe: "AI model to use",
         type: "string",
     });
 }, async (argv) => {
-    await pullRequest(argv.base);
+    await runGenerate(argv.model);
+})
+    .command("pr", "Generate a pull request description based on staged files", (yargs) => {
+    return yargs
+        .option("base", {
+        alias: "b",
+        describe: "Base branch for pull request (default: auto-detected)",
+        type: "string",
+    })
+        .option("model", {
+        alias: "m",
+        describe: "AI model to use",
+        type: "string",
+    });
+}, async (argv) => {
+    await pullRequest(argv.base, argv.model);
 })
     .help().argv;
 if (Array.isArray(argv._) && argv._.length === 0) {
-    await runGenerate();
+    await runGenerate(argv.model);
 }

@@ -5,30 +5,40 @@ const configFilePath = path.join(os.homedir(), ".malas-commit");
 const defaultConfig = {
     GROQ_APIKEY: "",
     GEMINI_APIKEY: "",
+    GROQ_MODEL: "openai/gpt-oss-120b",
+    GEMINI_MODEL: "gemini-3.6-flash",
     COMMIT_PROMPT: "",
 };
-const loadConfig = () => {
+export const loadConfig = () => {
     try {
-        const configFile = fs.readFileSync(configFilePath, "utf-8");
-        return JSON.parse(configFile);
+        if (fs.existsSync(configFilePath)) {
+            const configFile = fs.readFileSync(configFilePath, "utf-8");
+            return JSON.parse(configFile);
+        }
+        saveConfig(defaultConfig);
+        return defaultConfig;
     }
     catch {
-        console.log(`Configuration file not found at ${configFilePath}.\n`);
-        console.log(`Creating a new configuration file...\n`);
-        saveConfig(defaultConfig);
-        console.log(`A new configuration file has been created at ${configFilePath}.\n`);
-        console.log(`Please update the configuration by running:\n`);
-        console.log(`'malas setConfig GROQ_APIKEY <your_apikey>'\n`);
-        process.exit(1);
         return defaultConfig;
     }
 };
-const saveConfig = (config) => {
+export const saveConfig = (config) => {
     fs.writeFileSync(configFilePath, JSON.stringify(config, null, 2), "utf-8");
 };
-const loadedConfig = loadConfig();
 export const config = {
-    GROQ_APIKEY: process.env.GROQ_APIKEY || loadedConfig.GROQ_APIKEY || "",
-    GEMINI_APIKEY: process.env.GEMINI_APIKEY || loadedConfig.GEMINI_APIKEY || "",
-    COMMIT_PROMPT: process.env.COMMIT_PROMPT || loadedConfig.COMMIT_PROMPT || "",
+    get GROQ_APIKEY() {
+        return process.env.GROQ_APIKEY || loadConfig().GROQ_APIKEY || "";
+    },
+    get GEMINI_APIKEY() {
+        return process.env.GEMINI_APIKEY || loadConfig().GEMINI_APIKEY || "";
+    },
+    get GROQ_MODEL() {
+        return process.env.GROQ_MODEL || loadConfig().GROQ_MODEL || "openai/gpt-oss-120b";
+    },
+    get GEMINI_MODEL() {
+        return process.env.GEMINI_MODEL || loadConfig().GEMINI_MODEL || "gemini-3.6-flash";
+    },
+    get COMMIT_PROMPT() {
+        return process.env.COMMIT_PROMPT || loadConfig().COMMIT_PROMPT || "";
+    },
 };
