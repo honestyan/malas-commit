@@ -5,7 +5,7 @@ import { config } from "../config.js";
  * Unified AI completion function with fallback logic
  * Tries Groq first, then falls back to Gemini if Groq fails
  */
-export const generateCompletion = async (messages, model = "llama-3.1-8b-instant") => {
+export const generateCompletion = async (messages, model) => {
     // Try Groq first if API key is available
     if (config.GROQ_APIKEY) {
         try {
@@ -15,22 +15,24 @@ export const generateCompletion = async (messages, model = "llama-3.1-8b-instant
             return result;
         }
         catch (error) {
-            console.error("Groq API Error:", error instanceof Error ? error.message : error);
-            console.warn("⚠ Groq API failed, trying Gemini fallback...");
+            const groqErrMsg = error instanceof Error ? error.message : String(error);
+            console.error(`Groq API Error: ${groqErrMsg}`);
             // Fall back to Gemini if available
             if (config.GEMINI_APIKEY) {
+                console.warn("⚠ Groq API failed, trying Gemini fallback...");
                 try {
                     const result = await generateCompletionWithGemini(messages);
                     console.log("✓ Successfully generated with Gemini");
                     return result;
                 }
                 catch (geminiError) {
-                    console.error("Gemini API Error:", geminiError instanceof Error ? geminiError.message : geminiError);
-                    throw new Error(`Both Groq and Gemini APIs failed. Groq: ${error}, Gemini: ${geminiError}`);
+                    const geminiErrMsg = geminiError instanceof Error ? geminiError.message : String(geminiError);
+                    console.error(`Gemini API Error: ${geminiErrMsg}`);
+                    throw new Error(`Both Groq and Gemini APIs failed.\n• Groq: ${groqErrMsg}\n• Gemini: ${geminiErrMsg}`);
                 }
             }
             else {
-                throw new Error(`Groq API failed and no Gemini API key configured. Error: ${error}`);
+                throw new Error(`${groqErrMsg}\n(Tip: You can configure a fallback with 'malas setConfig GEMINI_APIKEY <key>')`);
             }
         }
     }
@@ -38,15 +40,16 @@ export const generateCompletion = async (messages, model = "llama-3.1-8b-instant
     if (config.GEMINI_APIKEY) {
         try {
             console.log("No Groq API key found, using Gemini...");
-            const result = await generateCompletionWithGemini(messages);
+            const result = await generateCompletionWithGemini(messages, model);
             console.log("✓ Successfully generated with Gemini");
             return result;
         }
         catch (error) {
-            console.error("Gemini API Error:", error instanceof Error ? error.message : error);
-            throw new Error(`Gemini API failed: ${error}`);
+            const geminiErrMsg = error instanceof Error ? error.message : String(error);
+            console.error(`Gemini API Error: ${geminiErrMsg}`);
+            throw new Error(`Gemini API failed: ${geminiErrMsg}`);
         }
     }
     // No API keys configured
-    throw new Error("No API keys configured. Please set either GROQ_APIKEY or GEMINI_APIKEY");
+    throw new Error("No API keys configured. Please set GROQ_APIKEY ('malas setConfig GROQ_APIKEY <your_key>') or GEMINI_APIKEY ('malas setConfig GEMINI_APIKEY <your_key>')");
 };
