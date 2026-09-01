@@ -43,7 +43,7 @@ export const generateCompletionWithGemini = async (
   messages: Message[],
   model?: string
 ): Promise<string> => {
-  const selectedModel = model || config.GEMINI_MODEL || "gemini-3.6-flash";
+  const selectedModel = model || config.GEMINI_MODEL || "gemini-2.5-flash";
   const apiKey = config.GEMINI_APIKEY;
 
   if (!apiKey) {

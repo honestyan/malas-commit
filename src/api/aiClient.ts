@@ -30,7 +30,7 @@ export const generateCompletion = async (
       if (config.GEMINI_APIKEY) {
         console.warn("⚠ Groq API failed, trying Gemini fallback...");
         try {
-          const result = await generateCompletionWithGemini(messages);
+          const result = await generateCompletionWithGemini(messages, model);
           console.log("✓ Successfully generated with Gemini");
           return result;
         } catch (geminiError) {

@@ -16,7 +16,7 @@ const defaultConfig: Config = {
   GROQ_APIKEY: "",
   GEMINI_APIKEY: "",
   GROQ_MODEL: "openai/gpt-oss-120b",
-  GEMINI_MODEL: "gemini-3.6-flash",
+  GEMINI_MODEL: "gemini-2.5-flash",
   COMMIT_PROMPT: "",
 };
 
@@ -48,7 +48,7 @@ export const config = {
     return process.env.GROQ_MODEL || loadConfig().GROQ_MODEL || "openai/gpt-oss-120b";
   },
   get GEMINI_MODEL(): string {
-    return process.env.GEMINI_MODEL || loadConfig().GEMINI_MODEL || "gemini-3.6-flash";
+    return process.env.GEMINI_MODEL || loadConfig().GEMINI_MODEL || "gemini-2.5-flash";
   },
   get COMMIT_PROMPT(): string {
     return process.env.COMMIT_PROMPT || loadConfig().COMMIT_PROMPT || "";

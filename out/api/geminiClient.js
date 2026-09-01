@@ -21,7 +21,7 @@ const convertMessagesToGeminiFormat = (messages) => {
     };
 };
 export const generateCompletionWithGemini = async (messages, model) => {
-    const selectedModel = model || config.GEMINI_MODEL || "gemini-3.6-flash";
+    const selectedModel = model || config.GEMINI_MODEL || "gemini-2.5-flash";
     const apiKey = config.GEMINI_APIKEY;
     if (!apiKey) {
         throw new Error("Gemini API key is not configured. Run 'malas setConfig GEMINI_APIKEY <your_api_key>' to set it.");
