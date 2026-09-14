@@ -16,6 +16,7 @@
     "build": "tsc && tsc-alias && node add-js-extensions.js",
     "start": "node out/index.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "publish": "npm publish --registry=https://registry.npmjs.org/",
     "publish-github": "npm publish --registry=https://npm.pkg.github.com --access public"
   },
   "dependencies": {
