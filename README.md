@@ -84,6 +84,12 @@ malas setConfig GROQ_APIKEY <your-groq-apikey>
 malas setConfig GEMINI_APIKEY <your-gemini-apikey>
 ```
 
+View the current configuration (API keys are masked):
+
+```bash
+malas config list
+```
+
 ## How to use
 
 ```bash

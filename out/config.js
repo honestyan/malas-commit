@@ -42,3 +42,24 @@ export const config = {
         return process.env.COMMIT_PROMPT || loadConfig().COMMIT_PROMPT || "";
     },
 };
+export const formatConfig = (values) => {
+    const entries = Object.entries(values);
+    const keyWidth = Math.max(...entries.map(([key]) => key.length));
+    return [
+        "Configuration",
+        "",
+        ...entries.map(([key, value]) => {
+            const isSet = Boolean(value);
+            const displayedValue = !value
+                ? "Not Set"
+                : key.endsWith("APIKEY")
+                    ? value.length <= 4
+                        ? "********"
+                        : `********${value.slice(-4)}`
+                    : key === "COMMIT_PROMPT"
+                        ? "Custom prompt configured"
+                        : value;
+            return `${isSet ? "✓" : "✗"} ${key.padEnd(keyWidth)}  ${displayedValue}`;
+        }),
+    ].join("\n");
+};

@@ -7,7 +7,7 @@ import { generateCommitMessage, generatePullRequest, } from "./services/commitSe
 import { getDiff, getStagedFiles, assertGitRepo, gitCommit, getDiffFromBaseBranch, getCommitMessages, getCurrentBranch, getBaseBranch, } from "./git/gitUtils.js";
 import os from "os";
 import { confirm } from "@clack/prompts";
-import { config, loadConfig, saveConfig } from "./config.js";
+import { config, formatConfig, loadConfig, saveConfig } from "./config.js";
 const configFilePath = path.join(os.homedir(), ".malas-commit");
 const getCharLimit = () => {
     if (!config.GROQ_APIKEY && config.GEMINI_APIKEY) {
@@ -171,6 +171,9 @@ const argv = yargs(hideBin(process.argv))
     const key = argv.key;
     const value = argv.value;
     setConfig(key, value);
+})
+    .command("config list", "List current configuration", () => { }, () => {
+    console.log(formatConfig(config));
 })
     .command("getConfig [key]", "Get configuration value", (yargs) => {
     return yargs.positional("key", {

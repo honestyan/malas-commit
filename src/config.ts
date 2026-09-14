@@ -4,7 +4,7 @@ import os from "os";
 
 const configFilePath = path.join(os.homedir(), ".malas-commit");
 
-interface Config {
+export interface Config {
   GROQ_APIKEY?: string;
   GEMINI_APIKEY?: string;
   GROQ_MODEL?: string;
@@ -55,3 +55,26 @@ export const config = {
   },
 };
 
+export const formatConfig = (values: Config): string => {
+  const entries = Object.entries(values);
+  const keyWidth = Math.max(...entries.map(([key]) => key.length));
+
+  return [
+    "Configuration",
+    "",
+    ...entries.map(([key, value]) => {
+      const isSet = Boolean(value);
+      const displayedValue = !value
+        ? "Not Set"
+        : key.endsWith("APIKEY")
+          ? value.length <= 4
+            ? "********"
+            : `********${value.slice(-4)}`
+          : key === "COMMIT_PROMPT"
+            ? "Custom prompt configured"
+            : value;
+
+      return `${isSet ? "✓" : "✗"} ${key.padEnd(keyWidth)}  ${displayedValue}`;
+    }),
+  ].join("\n");
+};

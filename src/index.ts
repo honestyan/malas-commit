@@ -19,7 +19,7 @@ import {
 } from "./git/gitUtils";
 import os from "os";
 import { confirm } from "@clack/prompts";
-import { config, loadConfig, saveConfig } from "./config";
+import { config, formatConfig, loadConfig, saveConfig } from "./config";
 
 const configFilePath = path.join(os.homedir(), ".malas-commit");
 
@@ -234,6 +234,14 @@ const argv = yargs(hideBin(process.argv))
     }
   )
   .command(
+    "config list",
+    "List current configuration",
+    () => {},
+    () => {
+      console.log(formatConfig(config));
+    }
+  )
+  .command(
     "getConfig [key]",
     "Get configuration value",
     (yargs) => {
@@ -298,4 +306,3 @@ const argv = yargs(hideBin(process.argv))
 if (Array.isArray(argv._) && argv._.length === 0) {
   await runGenerate(argv.model as string | undefined);
 }
-
